@@ -23,7 +23,8 @@ export default function CategoryPage(){
     const categories = useQuery({
         queryKey:["categories"],
         queryFn: fetchCategories,
-        enabled: !id
+        enabled: !id,
+        staleTime:1000*60*60
     });
 
     const category = useQuery({

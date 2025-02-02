@@ -9,21 +9,24 @@ export default function HomePage(){
     }
     const mostRentedBooksResult = useQuery({
         queryKey: ["mostrented"],
-        queryFn: fetchMostedRentedBooks
+        queryFn: fetchMostedRentedBooks,
+        staleTime:1000*60*60
     })
     function fetchPopularBooks(){
         return axiosClient.get('/books/popular');
     }
     const popularBooksResult = useQuery({
         queryKey: ["popular"],
-        queryFn: fetchPopularBooks
+        queryFn: fetchPopularBooks,
+        staleTime:1000*60*60
     })
     function fetchRecentBooks(){
         return axiosClient.get('/books/recent');
     }
     const recentBooksResult = useQuery({
         queryKey: ["recent"],
-        queryFn: fetchRecentBooks
+        queryFn: fetchRecentBooks,
+        staleTime:1000*60*60
     })
     function fetchFeaturedCategories(){
         return axiosClient.get("/categories/featured");
@@ -31,7 +34,8 @@ export default function HomePage(){
 
     const featuredCategories = useQuery({
         queryKey:["featuredcategories"],
-        queryFn: fetchFeaturedCategories
+        queryFn: fetchFeaturedCategories,
+        staleTime:1000*60*60
     })
 
     function fetchBooksByCategory(category){
@@ -42,7 +46,8 @@ export default function HomePage(){
         featuredCategories.data.data.map((category,i) => {
             return {
                 queryKey:['books',{category:category.id}],
-                queryFn:() => fetchBooksByCategory(category.id)
+                queryFn:() => fetchBooksByCategory(category.id),
+                staleTime:1000*60*60
             }
         }) : []
     })

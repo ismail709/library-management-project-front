@@ -33,7 +33,7 @@ export default function NavBar(){
     <nav className="bg-amber-400 relative p-4 flex flex-col">
         <div className="flex justify-between items-center flex-wrap md:flex-nowrap px-4">
             <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}><svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#000000"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></svg></button>
-            <h1 className="text-xl font-bold">Library App</h1>
+            <h1 className="text-xl font-bold">Books Paradise</h1>
             <div className="basis-full order-last md:basis-auto md:order-none">
             <SearchBar />
             </div>

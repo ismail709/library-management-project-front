@@ -1,5 +1,5 @@
 import { Link, Navigate, useNavigate, useParams } from "react-router";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosClient } from "../api/axios";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
@@ -22,6 +22,7 @@ export default function BookPage() {
     const [isFavorite,setIsFavorite] = useState(false);
     const {user} = useContext(UserContext);
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     
     const { data, isPending, isSuccess, isError } = useQuery({
@@ -34,7 +35,6 @@ export default function BookPage() {
         queryKey: ["checkfavorite",{bookId}],
         queryFn: () => checkFavorites(bookId),
         enabled: !!bookId && !!user,
-        staleTime: 1000*60*5
     })
 
     useEffect(()=>{
@@ -42,7 +42,11 @@ export default function BookPage() {
             setBookId(data.data.id);
         }
     },[isSuccess]);
-    
+
+    useEffect(()=>{
+        queryClient.removeQueries({queryKey:['checkfavorite']});
+    },[])
+
     useEffect(()=>{
         if(checkFavoriteQuery.isSuccess){
             setIsFavorite(checkFavoriteQuery.data.data.is_favorite)
