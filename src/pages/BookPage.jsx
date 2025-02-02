@@ -1,12 +1,11 @@
 import { Link, Navigate, useNavigate, useParams } from "react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { axiosClient } from "../api/axios";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import {useAlert} from "../components/AlertContextProvider";
 
 function fetchBook(slug) {
-    return axiosClient.get("/books/"+slug);
+    return axiosClient.get("/books/"+slug,{params:{view:true}});
 }
 
 function toggleFavorites(id) {
@@ -28,12 +27,14 @@ export default function BookPage() {
     const { data, isPending, isSuccess, isError } = useQuery({
         queryKey: ["book", {slug}],
         queryFn: () => fetchBook(slug),
+        staleTime: 1000*60*60
     });
 
     const checkFavoriteQuery = useQuery({
         queryKey: ["checkfavorite",{bookId}],
         queryFn: () => checkFavorites(bookId),
-        enabled: !!bookId
+        enabled: !!bookId && !!user,
+        staleTime: 1000*60*5
     })
 
     useEffect(()=>{
@@ -41,6 +42,7 @@ export default function BookPage() {
             setBookId(data.data.id);
         }
     },[isSuccess]);
+    
     useEffect(()=>{
         if(checkFavoriteQuery.isSuccess){
             setIsFavorite(checkFavoriteQuery.data.data.is_favorite)
@@ -119,7 +121,7 @@ export default function BookPage() {
                         className={`${isFavorite ? "bg-rose-500 hover:bg-rose-600 text-white" : "bg-slate-300 hover:bg-slate-400 text-slate-600"} px-6 py-3 rounded-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`}
                         disabled={favoriteMutation.isPending}
                     >
-                        {favoriteMutation.isPending || checkFavoriteQuery.isPending ? "Loading..." : (isFavorite ? "Remove from favorites" : "Add to favorites")}
+                        {favoriteMutation.isPending || checkFavoriteQuery.fetchStatus != "idle" ? "Loading..." : (isFavorite ? "Remove from favorites" : "Add to favorites")}
                     </button>
                 </div>
             </div>
