@@ -3,64 +3,59 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import BooksSection from "../components/BooksSection";
 import { useEffect } from "react";
 
-async function fetchMostedRentedBooks(){
-    return (await axiosClient.get('/books/mostrented')).data;
-}
-
-async function fetchPopularBooks(){
-    return (await axiosClient.get('/books/popular')).data;
-}
-
-async function fetchRecentBooks(){
-    return (await axiosClient.get('/books/recent')).data;
-}
-
-async function fetchFeaturedCategories(){
-    return (await axiosClient.get("/categories/featured")).data;
-}
-
-async function fetchBooksByCategory(category){
-    return (await axiosClient.get('/books/c/'+category)).data;
-}
 
 export default function HomePage(){
-
-    const featuredCategories = useQuery({
-        queryKey:["featured-categories"],
-        queryFn: fetchFeaturedCategories,
-        staleTime:1000*60*60
-    })
-    
+    function fetchMostedRentedBooks(){
+        return axiosClient.get('/books/mostrented');
+    }
     const mostRentedBooksResult = useQuery({
         queryKey: ["mostrented"],
         queryFn: fetchMostedRentedBooks,
         staleTime:1000*60*60
     })
-    
+    function fetchPopularBooks(){
+        return axiosClient.get('/books/popular');
+    }
     const popularBooksResult = useQuery({
         queryKey: ["popular"],
         queryFn: fetchPopularBooks,
         staleTime:1000*60*60
     })
-    
+    function fetchRecentBooks(){
+        return axiosClient.get('/books/recent');
+    }
     const recentBooksResult = useQuery({
         queryKey: ["recent"],
         queryFn: fetchRecentBooks,
         staleTime:1000*60*60
     })
+    function fetchFeaturedCategories(){
+        return axiosClient.get("/categories/featured");
+    }
 
+    const featuredCategories = useQuery({
+        queryKey:["featuredcategories"],
+        queryFn: fetchFeaturedCategories,
+        staleTime:1000*60*60
+    })
+
+    function fetchBooksByCategory(category){
+        return axiosClient.get('/books/c/'+category);
+    }
     const booksByCategoryResult = useQueries({
-        queries: featuredCategories.data ? 
-        featuredCategories.data.map((category,i) => {
+        queries: featuredCategories?.data?.data ? 
+        featuredCategories.data.data.map((category,i) => {
             return {
-                queryKey:['homepage_books',{category:category.id}],
+                queryKey:['books',{category:category.id}],
                 queryFn:() => fetchBooksByCategory(category.id),
                 staleTime:1000*60*60
             }
         }) : []
     })
-
-    return <div className="flex flex-col gap-4 py-8 px-2">
+    useEffect(()=>{
+        console.log("render")
+    })
+    return <div className="flex flex-col gap-4 py-8 px-8 lg:px-0">
         <div className="bg-[url(books.jpeg)]">
             <div className="text-white bg-black/30 transition-all duration-300 ease-in-out hover:backdrop-blur-sm p-8">
                 <h1 className="text-2xl font-bold mb-2">Welcome!</h1>
@@ -71,7 +66,7 @@ export default function HomePage(){
         <BooksSection to="/popular" query={popularBooksResult} title="Popular" />
         <BooksSection to="/recent" query={recentBooksResult} title="Recently Added" />
         {booksByCategoryResult.length > 0 ?
-            booksByCategoryResult.map((query,i) => <BooksSection to={`/c/${featuredCategories.data[i].id}`} title={featuredCategories.data[i].name} query={query} key={i} />)
+            booksByCategoryResult.map((query,i) => <BooksSection to={`/c/${featuredCategories.data.data[i].id}`} title={featuredCategories.data.data[i].name} query={query} key={i} />)
         : null}
     </div>
 }

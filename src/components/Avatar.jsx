@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { Link, useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosClient } from "../api/axios";
 import { useAlert } from "./AlertContextProvider";
 
@@ -13,6 +13,8 @@ const Avatar = () => {
   const { user,setUser } = useContext(UserContext);
   const { showAlert } = useAlert();
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -38,14 +40,15 @@ const handleClickOutside = (e) => {
   }
   const mutation = useMutation({
     mutationFn: handleLogout,
-    onSuccess: (data, vars, context) => {
-      console.log("logout success");
+    onSuccess: (data) => {
       setUser(null);
+      queryClient.removeQueries({queryKey:["favorites"]});
+      queryClient.removeQueries({queryKey:["reservations"]});
       showAlert("Logged Out Successfully!");
-      navigate("/");
       localStorage.removeItem("auth_token");
+      navigate("/");
     },
-    onError: (error, vars, context) => {
+    onError: (error) => {
       console.log(error);
     },
   });

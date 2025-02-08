@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 export default function CategoryCard({ category }) {
     if (!category) {
       return (
-        <div className="p-4 bg-white shadow-lg rounded-sm animate-pulse w-60 h-40">
+        <div className="p-4 bg-white shadow-lg rounded-sm animate-pulse w-full h-40">
           <div className="h-6 bg-gray-300 rounded w-3/4"></div>
           <div className="h-4 bg-gray-300 rounded w-full mt-2"></div>
         </div>

@@ -23,20 +23,19 @@ export default function LoginPage(){
     const mutation = useMutation({
         mutationFn: handleLogin,
         onSuccess: (data,vars,context) => {
-            console.log("login success!")
             setErrors([]);
             setUser(data.data.user)
             showAlert("Logged In Successfully!")
-            navigate("/")
             localStorage.setItem("auth_token",data.data.token)
+            navigate("/")
         },
         onError: (error,vars,context) => {
             setErrors(Object.values(error.response.data.errors))
         }
     })
     return (
-        <div className="flex justify-center items-center py-24">
-          <div className="bg-white p-8 rounded-sm shadow-lg w-full max-w-full sm:max-w-md">
+        <div className="flex justify-center items-center py-8 md:py-24">
+          <div className="bg-white px-2 md:p-8 rounded-sm shadow-none md:shadow-lg w-full max-w-full sm:max-w-md">
             <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
             <form onSubmit={mutation.mutate} className="flex flex-col space-y-4">
               {/* Error Messages */}

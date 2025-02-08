@@ -17,7 +17,6 @@ export default function RegisterPage() {
 	const mutation = useMutation({
 		mutationFn: handleRegister,
 		onSuccess: (data, vars, context) => {
-			console.log("register success!");
 			setErrors([]);
 			showAlert("Registered Successfully!");
 			navigate("/login");
@@ -28,8 +27,8 @@ export default function RegisterPage() {
 	});
 
 	return (
-		<div className="flex justify-center items-center py-24">
-			<div className="bg-white p-8 rounded-sm shadow-lg w-full max-w-full sm:max-w-md">
+		<div className="flex justify-center items-center py-8 md:py-24">
+			<div className="bg-white px-2 md:p-8 rounded-sm shadow-none md:shadow-lg w-full max-w-full sm:max-w-md">
 				<h1 className="text-2xl font-bold text-center mb-6">
 					Register
 				</h1>

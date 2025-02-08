@@ -3,6 +3,7 @@
 @layer utilities {
     .custom-scrollbar::-webkit-scrollbar {
       height: 8px;
+      width: 8px;
     }
     
     .custom-scrollbar::-webkit-scrollbar-thumb {
